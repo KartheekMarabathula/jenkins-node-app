@@ -1,5 +1,9 @@
-pipeline{
-agent any
+pipeline {
+    agent {
+        docker {
+            image 'node:18-alpine'
+        }
+    }
 options {
         timeout(time: 10, unit: 'MINUTES')
     }
@@ -64,4 +68,5 @@ stages{
     }
 }
 }
+
 }
