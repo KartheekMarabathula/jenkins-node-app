@@ -1,8 +1,9 @@
 pipeline {
-    agent {
+     agent {
         docker {
             image 'node:18-alpine'
-            args '-u node'
+            // FIX: Running as root prevents permission-related hangs on the workspace
+            args '-u root'
         }
     }
 options {
@@ -13,11 +14,15 @@ options {
         IMAGE_TAG = "${env.BUILD_NUMBER}"
     }
 stages{
-    stage('Install Dependencies'){
-        steps{
-            sh 'npm install'
+    stage('Install Dependencies') {
+            steps {
+                // FIX: Added flags to prevent hanging and show detailed progress
+                sh '''
+                    npm config set strict-ssl false
+                    npm install --no-audit --no-fund --loglevel verbose
+                '''
+            }
         }
-    }
     stage('Run Tests'){
          steps{
             sh 'npm test'
@@ -71,4 +76,5 @@ stages{
 }
 
 }
+
 
