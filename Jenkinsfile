@@ -1,11 +1,5 @@
 pipeline {
-     agent {
-        docker {
-            image 'node:18-alpine'
-            // FIX: Running as root prevents permission-related hangs on the workspace
-            args '-u root'
-        }
-    }
+     agent any
 options {
         timeout(time: 10, unit: 'MINUTES')
     }
@@ -15,6 +9,9 @@ options {
     }
 stages{
     stage('Install Dependencies') {
+           agent {
+                docker { image 'node:18-alpine'; args '-u root' }
+            }
             steps {
                 // FIX: Added flags to prevent hanging and show detailed progress
                 sh '''
@@ -76,5 +73,6 @@ stages{
 }
 
 }
+
 
 
